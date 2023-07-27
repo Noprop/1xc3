@@ -26,19 +26,19 @@ int main() {
     // ##############################################################################
     printf("The server has generated a random word. You have %d attempts to guess the word.\n", MAX_ATTEMPTS);
 
-    // printf("Random word with at least 6 characters: %s\n", randomWord);
+    printf("Random word with at least 6 characters: %s\n", randomWord);
 
     // ##############################################################################
     // ############################### Part A #######################################
     // ##############################################################################
     // Call the word guessing game
-    // bool gameResult = playWordGuessingGame(randomWord);
+    bool gameResult = playWordGuessingGame(randomWord);
 
-    // if (gameResult) {
-    //     printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
-    // } else {
-    //     printf("Out of attempts. The word was: %s\n", randomWord);
-    // }
+    if (gameResult) {
+        printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
+    } else {
+        printf("Out of attempts. The word was: %s\n", randomWord);
+    }
 
     // ##############################################################################
 
