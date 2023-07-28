@@ -15,7 +15,7 @@ bool playWordGuessingGame(char *word)
 	if (userExperience == NULL)								// and userExp is the string printed to the console
 		return 0;
 
-	for (int i = 0; i < len*2; i++) {
+	for (size_t i = 0; i < len*2; i++) {
 		// setup our user string
 		userExperience[i] = i % 2 ? ' ' : '-';
 	}
@@ -64,7 +64,7 @@ bool playWordGuessingGameAutomatic (const char *randomWord, char **words, int nu
 	if (userExperience == NULL)								// and userExp is the string printed to the console
 		return 0;
 
-	for (int i = 0; i < len*2; i++) {
+	for (size_t i = 0; i < len*2; i++) {
 		// setup our user string
 		userExperience[i] = i % 2 ? ' ' : '-';
 	}
@@ -108,7 +108,7 @@ bool playWordGuessingGameAutomatic (const char *randomWord, char **words, int nu
 
 					// no need to compare if they haven't found a single character
 					if (charsFound != 0) {
-						for (int j = 0; j < len; j++) {
+						for (size_t j = 0; j < len; j++) {
 							if (userExperience[j*2] == '-') continue; // no need to check
 							if (words[i][j] != randomWord[j]) {
 								// if it's not what what we're looking for disable the flag
