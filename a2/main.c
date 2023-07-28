@@ -7,8 +7,7 @@
 #include "readFile_randWord.h"
 #include "functions.h"
 
-int main()
-{
+int main() {
 
 	// ##############################################################################
 	// ############################# Dictionary #####################################
@@ -23,45 +22,33 @@ int main()
 	// Pick a random word with at least minLength characters from the array
 	char *randomWord = getRandomWordWithMinLength(words, numWords, MIN_RAND_WORD_LENGTH);
 
-	// ##############################################################################
-	// printf("The server has generated a random word. You have %d attempts to guess the word.\n", MAX_ATTEMPTS);
+	char choice;
+	printf("Do you want to play the automatic version? (y/n): ");
+	scanf(" %c", &choice);
+	if (choice == 'y') {
+		printf("\n\nAutomatic Version.\n");
+		printf("\nThe server has generated a random word. You have %d attempts to guess the word.\n", MAX_ATTEMPTS);
 
-	// printf("Random word with at least 6 characters: %s\n", randomWord);
+		// Call the automatic version of the word guessing game
+		int numSuggestion = 50;
+		bool gameResult_auto = playWordGuessingGameAutomatic(randomWord, words, numWords, numSuggestion);
 
-	// ##############################################################################
-	// ############################### Part A #######################################
-	// ##############################################################################
-	// Call the word guessing game
-	// bool gameResult = playWordGuessingGame(randomWord);
-
-	// if (gameResult)
-	// {
-	// 	printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
-	// }
-	// else
-	// {
-	// 	printf("Out of attempts. The word was: %s\n", randomWord);
-	// }
-
-	// ##############################################################################
-
-	// ##############################################################################
-	// ############################### Part B #######################################
-	// ##############################################################################
-	printf("\n\nAutomatic Version.\n");
-	printf("\nThe server has generated a random word. You have %d attempts to guess the word.\n", MAX_ATTEMPTS);
-
-	// Call the automatic version of the word guessing game
-	int numSuggestion = 50;
-	bool gameResult_auto = playWordGuessingGameAutomatic(randomWord, words, numWords, numSuggestion);
-
-	if (gameResult_auto) {
-	    printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
+		if (gameResult_auto) {
+			printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
+		} else {
+			printf("Out of attempts. The word was: %s\n", randomWord);
+		}
 	} else {
-	    printf("Out of attempts. The word was: %s\n", randomWord);
-	}
+		printf("\nThe server has generated a random word. You have %d attempts to guess the word.\n", MAX_ATTEMPTS);
+		bool gameResult = playWordGuessingGame(randomWord);
 
-	// ##############################################################################
+		if (gameResult) {
+			printf("Congratulations! You guessed the word correctly: %s\n", randomWord);
+		}
+		else {
+			printf("Out of attempts. The word was: %s\n", randomWord);
+		}
+	}
 
 	// Free allocated memory for words
 	freeWords(words, numWords);
