@@ -2,8 +2,7 @@
 #define FUNCTIONS_H
 
 // Function prototypes
-bool playWordGuessingGame(char *word);
-// void freeWords(char **words, int numWords);
-// char* getRandomWordWithMinLength(char **words, int numWords, int minLength);
+bool playWordGuessingGame (char *word);
+bool playWordGuessingGameAutomatic (const char *randomWord, char **words, int numWords, int numSuggestion);
 
 #endif
