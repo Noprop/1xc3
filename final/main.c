@@ -18,9 +18,8 @@
 #define MAX_COLS 4
 #define train_split 0.1 // 0.3 percent of data will be used for train
 
-double sigmoid(double x)
-{
-    return 1.0 / (1.0 + exp(-x));
+double sigmoid(double x) {
+  return 1.0 / (1.0 + exp(-x));
 }
 
 // double random_double(double min, double max)
@@ -30,28 +29,27 @@ double sigmoid(double x)
 //     double scale = rand() / (double)RAND_MAX; // [0, 1.0]
 //     return min + scale * (max - min);         // [min, max]
 // }
-double random_double(double min, double max)
-{
-    unsigned char buffer[sizeof(uint64_t)]; // Buffer to hold random bytes
-    uint64_t random_value;
+double random_double(double min, double max) {
+  unsigned char buffer[sizeof(uint64_t)]; // Buffer to hold random bytes
+  uint64_t random_value;
 
-    // Initialize the sodium library
-    if (sodium_init() < 0) {
-        // Initialization failed
-        // Handle the error here (e.g., print an error message and exit)
-    }
+  // Initialize the sodium library
+  if (sodium_init() < 0) {
+    // Initialization failed
+    // Handle the error here (e.g., print an error message and exit)
+  }
 
-    // Generate random bytes
-    randombytes_buf(buffer, sizeof(uint64_t));
+  // Generate random bytes
+  randombytes_buf(buffer, sizeof(uint64_t));
 
-    // Convert the random bytes to a 64-bit unsigned integer value
-    memcpy(&random_value, buffer, sizeof(uint64_t));
+  // Convert the random bytes to a 64-bit unsigned integer value
+  memcpy(&random_value, buffer, sizeof(uint64_t));
 
-    // Scale the 64-bit random integer to a double value in the range [0, 1.0]
-    double scale = random_value / ((double)UINT64_MAX);
+  // Scale the 64-bit random integer to a double value in the range [0, 1.0]
+  double scale = random_value / ((double)UINT64_MAX);
 
-    // Scale the value to the desired range [min, max]
-    return min + scale * (max - min);
+  // Scale the value to the desired range [min, max]
+  return min + scale * (max - min);
 }
 
 // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
@@ -88,54 +86,47 @@ void read_file(double (*data_ptr)[MAX_COLS]) {
 void ForwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
                  double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                  double b2[][1], double b3[][1], double b4[][1],
-                 double a2[][num_train], double a3[][num_train], double a4[][num_train])
-{
+                 double a2[][num_train], double a3[][num_train], double a4[][num_train]
+) {  
+  for (int i = 0; i < num_neurons_layer2; i++) {
+    for (int j = 0; j < num_train; j++) {
+      double sum = 0;
+      for (size_t k = 0; k < num_inputs; k++) {
+        sum += W2[i][k] * X_train[j][k];
+      }
 
-    for (int i = 0; i < num_neurons_layer2; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_inputs; k++)
-            {
-                sum += W2[i][k] * X_train[j][k];
-            }
-
-            a2[i][j] = tanh(sum + b2[i][0]); // the activation function here is tanh()
-        }
+      a2[i][j] = tanh(sum + b2[i][0]); // the activation function here is tanh()
     }
+  }
 
-    for (int i = 0; i < num_neurons_layer3; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_neurons_layer2; k++)
-            {
-                sum += W3[i][k] * a2[k][j];
-            }
+  for (int i = 0; i < num_neurons_layer3; i++) {
+    for (int j = 0; j < num_train; j++) {
+      double sum = 0;
+      for (size_t k = 0; k < num_neurons_layer2; k++) {
+        sum += W3[i][k] * a2[k][j];
+      }
 
-            a3[i][j] = tanh(sum + b3[i][0]); // the activation function here is tanh()
-        }
+      a3[i][j] = tanh(sum + b3[i][0]); // the activation function here is tanh()
     }
+  }
 
-    for (int i = 0; i < num_outputs; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_neurons_layer3; k++)
-            {
-                sum += W4[i][k] * a3[k][j];
-            }
+  for (int i = 0; i < num_outputs; i++) {
+    for (int j = 0; j < num_train; j++) {
+      double sum = 0;
+      for (size_t k = 0; k < num_neurons_layer3; k++) {
+        sum += W4[i][k] * a3[k][j];
+      }
 
-            a4[i][j] = sigmoid(sum + b4[i][0]);
-        }
+      a4[i][j] = sigmoid(sum + b4[i][0]);
     }
+  }
 }
 
 // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
 //  The same as ForwardPass, do the function BackwardPass() here
+void BackwardPass() {
+
+}
 
 int main()
 {
