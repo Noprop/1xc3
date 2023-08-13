@@ -64,15 +64,13 @@ void read_file(double (*data_ptr)[MAX_COLS]) {
     return 1;
   }
 
-  double data[MAX_ROWS][MAX_COLS];
-
   int row = 0;
   char line[100];
 
   // Read each line of the file
   while (fgets(line, sizeof(line), file)) {
     // Tokenize the line and store the values in the array
-    sscanf(line, "%lf %lf %lf %lf", data[row][0], data[row][1], data[row][2], data[row][3]);
+    sscanf(line, "%lf %lf %lf %lf", data_ptr[row][0], data_ptr[row][1], data_ptr[row][2], data_ptr[row][3]);
 
     row++;
     // Break the loop if the array is full to prevent overflow
