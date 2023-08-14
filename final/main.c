@@ -22,14 +22,7 @@ double sigmoid(double x) {
   return 1.0 / (1.0 + exp(-x));
 }
 
-// double random_double(double min, double max)
-// {   
-//     // Seed the random number generator with the current time
-//     srand(time(NULL));
-//     double scale = rand() / (double)RAND_MAX; // [0, 1.0]
-//     return min + scale * (max - min);         // [min, max]
-// }
-double random_double(double min, double max) {
+double randomDouble(double min, double max) {
   unsigned char buffer[sizeof(uint64_t)]; // Buffer to hold random bytes
   uint64_t random_value;
 
@@ -54,7 +47,7 @@ double random_double(double min, double max) {
 
 // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
 //  Here write a function to read data.txt and save the values in data[MAX_ROWS][MAX_COLS];
-void read_file(double (*data_ptr)[MAX_COLS]) {
+void readFile(double (*data_ptr)[MAX_COLS]) {
   // Open the file in read mode
   FILE *file = fopen("data.txt", "r");
   if (file == NULL) {
@@ -83,7 +76,7 @@ void read_file(double (*data_ptr)[MAX_COLS]) {
 }
 
 
-void ForwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
+void forwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
                  double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                  double b2[][1], double b3[][1], double b4[][1],
                  double a2[][num_train], double a3[][num_train], double a4[][num_train]
@@ -124,7 +117,7 @@ void ForwardPass(int num_train, double X_train[][num_inputs], double Y_train[][n
 
 // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
 //  The same as ForwardPass, do the function BackwardPass() here
-void BackwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
+void backwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
                   double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                   double b2[][1], double b3[][1], double b4[][1],
                   double a2[][num_train], double a3[][num_train], double a4[][num_train]
@@ -266,14 +259,14 @@ void BackwardPass(int num_train, double X_train[][num_inputs], double Y_train[][
   free(W3_PL2);
 }
 
-void Evaluation(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
+void evaluation(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
                 int num_val, double X_val[][num_inputs], double Y_val[][num_outputs],
                 double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                 double b2[][1], double b3[][1], double b4[][1],
                 double a2[][num_train], double a3[][num_train], int ep
 ) {
   double a4_eval_train[num_outputs][num_train];
-  ForwardPass(num_train, X_train, Y_train,
+  forwardPass(num_train, X_train, Y_train,
               W2, W3, W4,
               b2, b3, b4,
               a2, a3, a4_eval_train);
@@ -308,7 +301,7 @@ void Evaluation(int num_train, double X_train[][num_inputs], double Y_train[][nu
   /// Explain here why I needed to dynamically allocate the memory
 
   // answer: you'll run out of memory on the stack. During testing, I actually encountered
-  // this exact problem in the BackwardPass function. In turn, I changed it to dynamic memory allocation
+  // this exact problem in the backwardPass function. In turn, I changed it to dynamic memory allocation
   // onto the heap, using malloc, and no longer ran into this problem.
   
   // What did I learn? How to debug. I was running into a segmentation fault in that specific function
@@ -320,7 +313,7 @@ void Evaluation(int num_train, double X_train[][num_inputs], double Y_train[][nu
   double(*a3_val)[num_val] = malloc(num_neurons_layer3 * sizeof(double[num_val]));
   double(*a4_val)[num_val] = malloc(num_outputs * sizeof(double[num_val]));
 
-  ForwardPass(num_val, X_val, Y_val,
+  forwardPass(num_val, X_val, Y_val,
               W2, W3, W4,
               b2, b3, b4,
               a2_val, a3_val, a4_val);
@@ -366,7 +359,7 @@ int main()
   double data[MAX_ROWS][MAX_COLS];
   // pointer to data, the 'size' of the pointer is the size of one row.
   double (*data_ptr)[MAX_COLS] = data;
-  read_file(data_ptr);
+  readFile(data_ptr);
 
   int num_train = MAX_ROWS * train_split;
   int num_val = MAX_ROWS * (1-train_split);
@@ -402,25 +395,25 @@ int main()
   // Initialize W2 and b2 arrays with random values between -a and +a
   for (int i = 0; i < num_neurons_layer2; i++) {
     for (int j = 0; j < num_inputs; j++) {
-      W2[i][j] = random_double(-initial_range, initial_range);
+      W2[i][j] = randomDouble(-initial_range, initial_range);
     }
-    b2[i][0] = random_double(-initial_range, initial_range);
+    b2[i][0] = randomDouble(-initial_range, initial_range);
   }
 
   // Initialize W3 and b3 arrays with random values between -a and +a
   for (int i = 0; i < num_neurons_layer3; i++) {
     for (int j = 0; j < num_neurons_layer2; j++) {
-      W3[i][j] = random_double(-initial_range, initial_range);
+      W3[i][j] = randomDouble(-initial_range, initial_range);
     }
-    b3[i][0] = random_double(-initial_range, initial_range);
+    b3[i][0] = randomDouble(-initial_range, initial_range);
   }
 
   // Initialize W4 and b4 arrays with random values between -a and +a
   for (int i = 0; i < num_outputs; i++) {
     for (int j = 0; j < num_neurons_layer3; j++) {
-      W4[i][j] = random_double(-initial_range, initial_range);
+      W4[i][j] = randomDouble(-initial_range, initial_range);
     }
-    b4[i][0] = random_double(-initial_range, initial_range);
+    b4[i][0] = randomDouble(-initial_range, initial_range);
   }
 
   // the final output of each layer, every column is for a set of inputs
@@ -429,12 +422,12 @@ int main()
   double a4[num_outputs][num_train];
 
   for (int ep = 0; ep < epochs; ep++) {
-    ForwardPass(num_train, X_train, Y_train,
+    forwardPass(num_train, X_train, Y_train,
                 W2, W3, W4,
                 b2, b3, b4,
                 a2, a3, a4);
 
-    BackwardPass(num_train, X_train, Y_train,
+    backwardPass(num_train, X_train, Y_train,
                  W2, W3, W4,
                  b2, b3, b4,
                  a2, a3, a4);
@@ -442,7 +435,7 @@ int main()
     // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
     // ###################################################### Evaluation of accuracies starts
     if (ep%100 == 0) {
-      Evaluation(num_train, X_train, Y_train,
+      evaluation(num_train, X_train, Y_train,
                  num_val, X_val, Y_val,
                  W2, W3, W4,
                  b2, b3, b4,
