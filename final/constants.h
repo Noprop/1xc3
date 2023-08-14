@@ -12,7 +12,7 @@
 
 #define MAX_ROWS 48120
 #define MAX_COLS 4
-#define train_split 0.1 // 0.1 percent of data will be used for train
+#define train_split 0.001 // 0.001 percent of data will be used for train
 #define num_train (int)(MAX_ROWS * train_split)
 #define num_val (int)(MAX_ROWS * (1-train_split))
 

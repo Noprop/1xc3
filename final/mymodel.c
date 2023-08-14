@@ -62,7 +62,7 @@ void readFile(double (*data_ptr)[MAX_COLS]) {
   fclose(file);
 }
 
-void forwardPass(double X_train[][num_inputs], double Y_train[][num_outputs],
+void forwardPass(double X_train[][num_inputs],
                  double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                  double b2[][1], double b3[][1], double b4[][1],
                  double a2[][num_train], double a3[][num_train], double a4[][num_train]
@@ -250,7 +250,7 @@ void evaluation(double X_train[][num_inputs], double Y_train[][num_outputs],
                 double a2[][num_train], double a3[][num_train], int ep
 ) {
   double a4_eval_train[num_outputs][num_train];
-  forwardPass(X_train, Y_train,
+  forwardPass(X_train,
               W2, W3, W4,
               b2, b3, b4,
               a2, a3, a4_eval_train);
@@ -297,7 +297,7 @@ void evaluation(double X_train[][num_inputs], double Y_train[][num_outputs],
   double(*a3_val)[num_val] = malloc(num_neurons_layer3 * sizeof(double[num_val]));
   double(*a4_val)[num_val] = malloc(num_outputs * sizeof(double[num_val]));
 
-  forwardPass(X_val, Y_val,
+  forwardPass(X_val,
               W2, W3, W4,
               b2, b3, b4,
               a2_val, a3_val, a4_val);
@@ -338,9 +338,9 @@ void evaluation(double X_train[][num_inputs], double Y_train[][num_outputs],
 }
 
 void initWeightsAndBiases(double W2[][num_inputs], double b2[][1],
-  												double W3[][num_neurons_layer2], double b3[][1],
-													double W4[][num_neurons_layer3], double b4[][1]) {
-	// Initialize W2 and b2 arrays with random values between -a and +a
+                          double W3[][num_neurons_layer2], double b3[][1],
+                          double W4[][num_neurons_layer3], double b4[][1]) {
+  // Initialize W2 and b2 arrays with random values between -a and +a
   for (int i = 0; i < num_neurons_layer2; i++) {
     for (int j = 0; j < num_inputs; j++) {
       W2[i][j] = randomDouble(-initial_range, initial_range);

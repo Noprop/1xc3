@@ -49,8 +49,8 @@ int main() {
   double a3[num_neurons_layer3][num_train];
   double a4[num_outputs][num_train];
 
-  for (int ep = 0; ep < epochs; ep++) {
-    forwardPass(X_train, Y_train,
+  for (int ep = 0; ep <= epochs; ep++) {
+    forwardPass(X_train,
                 W2, W3, W4,
                 b2, b3, b4,
                 a2, a3, a4);
