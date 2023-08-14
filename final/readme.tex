@@ -1,0 +1,118 @@
+\documentclass{report}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{tabularx} % for table
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+
+
+
+\title{1XC3 Final Project Readme}
+\author{Greg Forster}
+\date{August 2023}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Makefile}: \\
+
+My Makefile is highly specific to my MacOS setup, as it references the sodium header file in /opt/homebrew/include and then links to my sodium library binary in /opt/homebrew/lib. I would suggest modifying this to your setup, or alternatively, manually compiling with gcc such as \\ \verb|gcc $(pkg-config --cflags --libs libsodium) -o my_program main.c mymodel.c| \\ but be sure to have sodium and pkg-config installed! \\
+
+I referenced Andrej Karpathy's C code for some tips as well. 
+\href{https://github.com/karpathy/llama2.c/blob/master/run.c}{https://github.com/karpathy/llama2.c/blob/master/run.c}
+
+
+
+\begin{table}[h!]
+\centering
+\caption{epochs = 100000, train split = 0.003, \textbf{Learning Rate (LR) is variable}}
+\vspace{10pt}  % Adjust the value as needed
+\small
+\begin{tabularx}{\textwidth}{@{} X X X X X @{}}
+\hline
+{Test} & {Cost Train} & {Cost Validation} & {Train Accuracy[\%]} & {Validation Accuracy[\%]} \\
+\hline
+0.0005 & 0.436835 & 0.999342 & 63.89\% & 0.17\% \\
+\hline
+0.001 & 0.123492 & 1.001023 & 93.75\% & 0.21\% \\
+\hline
+0.005 & 0.010502 & 1.000255 & 100.00\% & 0.20\% \\
+\hline
+0.01 & 0.019815 & 1.000510 & 98.61\% & 0.16\% \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Learning rate = 0.005, train split = 0.003, \textbf{epochs is variable}}
+\vspace{10pt}  % Adjust the value as needed
+\begin{tabularx}{\textwidth}{@{} X X X X X @{}}
+\hline
+{Test} & {Cost Train} & {Cost Validation} & {Train Accuracy[\%]} & {Validation Accuracy[\%]} \\
+\hline
+100 & 0.480675 & 0.998744 & 58.33\% & 0.15\% \\
+\hline
+1000 & 0.459187 & 0.998709 & 58.33\% & 0.17\% \\
+\hline
+10000 & 0.439018 & 0.996827 & 64.58\% & 0.34\% \\
+\hline
+100000 & 0.011002 & 0.999511 & 99.31\% & 0.17\% \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Learning Rate}: \\
+
+In the learning rate experiment we can see that the train accuracy continued to increase the higher the LR went. At the end it seemed to reach a high point and began to decrease. Based on this, we can assume that the learning rate has now caused the model to overshoot the solution. \\ \\
+Basically, the weights and biases are now being modified too greatly to converge to our needed and optimal solution! (computationally: the derivative of our sigmoid and tanh functions are being multiplied by the learning rate) \\ \\
+On the other hand, we can see what happens if our learning rate is too low, as in the first test. 0.5\% seems to be the optimal amount. \\
+
+\textbf{Epochs}: \\
+
+This is the number of backpasses that will occur in our model. The backpasses are what actually modify our model and allow the next forwardpass to have a different output based on the input.\\
+
+If we have a correct learning rate, the more epochs the better! If our learning rate is too big, sometimes it'll be better if we have less epochs (because of overshooting). In our example, it wasn't until we had 100000 epochs was it relatively successful.
+
+\newpage
+
+\begin{table}[h!]
+\centering
+\caption{epochs = 100000, Learning rate = 0.005, \textbf{train split (TS) is variable}}
+\vspace{10pt}  % Adjust the value as needed
+\begin{tabularx}{\textwidth}{@{} X X X X X @{}}
+\hline
+{Test} & {Cost Train} & {Cost Validation} & {Train Accuracy[\%]} & {Validation Accuracy[\%]} \\
+\hline
+0.0003 & 0.000044 & 1.000271 & 100.00\% & 0.00\% \\
+\hline
+0.003 & 0.026275 & 1.000005 & 98.61\% & 0.21\% \\
+\hline
+0.005 & 0.011110 & 0.996973 & 99.17\% & 0.75\% \\
+\hline
+0.01 & 0.046799 & 0.993889 & 96.67\% & 1.49\% \\
+\hline
+0.1 & NA & NA & NA & NA \\
+\hline
+\end{tabularx}
+\end{table}
+
+
+
+\textbf{Train split}:
+
+I never ran into a segmentation fault because I already updated the backwardPass function to use dynamic memory on the heap intead of the stack! I unfortunately ran out of time to continue training with 0.1 though. (it started at 0.00\% accuracy and didn't look like it was going to change anytime soon, the training cost would stay at 1.00) \\
+
+
+\textbf{Overfitting}:
+
+It's essentially the model not being able to generalize from it's training dataset to the rest of the dataset, or new datasets. For example, if we used a very small training set in this project, perhaps 50 rows or less, there could be a bias towards the y values consistently being 1. If this is the case, then the model would learn more about when the y values are 1 and not the case when they are 0. So, if when tested on the rest of the dataset it would be inaccurate. \\
+I was able to get a 10\% validation accuracy by using 4 neurons in the second layer and 4 neurons in the third layer, with 10\% of the training data. \\
+
+\textbf{Python versus C} \\
+
+Tensorflow and other frameworks will always be much easier than using C! You no longer have to worry about memory management and a lot of the tools are abstracted away. There are some people even working on making ML frameworks faster and more efficient, such as tinygrad! \href{https://github.com/tinygrad/tinygrad}{tinygrad}
+
+\end{document}
