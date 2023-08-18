@@ -10,55 +10,11 @@
 void ForwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
                  double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
                  double b2[][1], double b3[][1], double b4[][1],
-                 double a2[][num_train], double a3[][num_train], double a4[][num_train])
-{
-
-    for (int i = 0; i < num_neurons_layer2; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_inputs; k++)
-            {
-                sum += W2[i][k] * X_train[j][k];
-            }
-
-            a2[i][j] = tanh(sum + b2[i][0]); // the activation function here is tanh()
-        }
-    }
-
-    for (int i = 0; i < num_neurons_layer3; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_neurons_layer2; k++)
-            {
-                sum += W3[i][k] * a2[k][j];
-            }
-
-            a3[i][j] = tanh(sum + b3[i][0]); // the activation function here is tanh()
-        }
-    }
-
-    for (int i = 0; i < num_outputs; i++)
-    {
-        for (int j = 0; j < num_train; j++)
-        {
-            double sum = 0;
-            for (size_t k = 0; k < num_neurons_layer3; k++)
-            {
-                sum += W4[i][k] * a3[k][j];
-            }
-
-            a4[i][j] = sigmoid(sum + b4[i][0]);
-        }
-    }
-}
-
+                 double a2[][num_train], double a3[][num_train], double a4[][num_train]);
 
 int main()
 {
+    // Open the file in read mode
     // initialize the 2D array to store the data
     double data[MAX_ROWS][MAX_COLS];
     // pointer to data, the 'size' of the pointer is the size of one row.
@@ -98,7 +54,6 @@ int main()
     double W4[num_outputs][num_neurons_layer3];
     double b4[num_outputs][1];
 
-    
     // Initialize W2 and b2 arrays with random values between -a and +a
     for (int i = 0; i < num_neurons_layer2; i++)
     {
@@ -134,7 +89,7 @@ int main()
     double a3[num_neurons_layer3][num_train];
     double a4[num_outputs][num_train];
 
-    for (int ep = 0; ep < epochs; ep++)
+    for (int ep = 0; ep <= epochs; ep++)
     {
         // ###################################################### ForwardPass start
 
@@ -345,7 +300,7 @@ int main()
         
 
         // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
-        /// Explain here why I needed to dynamically allocate the memory
+        // Explain here why I needed to dynamically allocate the memory
         double(*a2_val)[num_val] = malloc(num_neurons_layer2 * sizeof(double[num_val]));
         double(*a3_val)[num_val] = malloc(num_neurons_layer3 * sizeof(double[num_val]));
         double(*a4_val)[num_val] = malloc(num_outputs * sizeof(double[num_val]));
@@ -397,6 +352,55 @@ int main()
         printf("Validation Cost %lf,    Accuracy: %.2f%%\n\n",cost_val, accuracy_val);
 
 
+        }
+    }
+}
+
+
+void ForwardPass(int num_train, double X_train[][num_inputs], double Y_train[][num_outputs],
+                 double W2[][num_inputs], double W3[][num_neurons_layer2], double W4[][num_neurons_layer3],
+                 double b2[][1], double b3[][1], double b4[][1],
+                 double a2[][num_train], double a3[][num_train], double a4[][num_train])
+{
+    for (int i = 0; i < num_neurons_layer2; i++)
+    {
+        for (int j = 0; j < num_train; j++)
+        {
+            double sum = 0;
+            for (size_t k = 0; k < num_inputs; k++)
+            {
+                sum += W2[i][k] * X_train[j][k];
+            }
+
+            a2[i][j] = tanh(sum + b2[i][0]); // the activation function here is tanh()
+        }
+    }
+
+    for (int i = 0; i < num_neurons_layer3; i++)
+    {
+        for (int j = 0; j < num_train; j++)
+        {
+            double sum = 0;
+            for (size_t k = 0; k < num_neurons_layer2; k++)
+            {
+                sum += W3[i][k] * a2[k][j];
+            }
+
+            a3[i][j] = tanh(sum + b3[i][0]); // the activation function here is tanh()
+        }
+    }
+
+    for (int i = 0; i < num_outputs; i++)
+    {
+        for (int j = 0; j < num_train; j++)
+        {
+            double sum = 0;
+            for (size_t k = 0; k < num_neurons_layer3; k++)
+            {
+                sum += W4[i][k] * a3[k][j];
+            }
+
+            a4[i][j] = sigmoid(sum + b4[i][0]);
         }
     }
 }
