@@ -109,7 +109,7 @@ int main()
         // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
         // ###################################################### Evaluation of accuracies starts
 
-        if (ep%100==0)
+        if (ep%10000==0)
         {
         double a4_eval_train[num_outputs][num_train];
         ForwardPass(num_train, X_train,
@@ -151,6 +151,16 @@ int main()
 
         // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
         // Explain here why I needed to dynamically allocate the memory
+
+        // answer: you'll run out of memory on the stack.
+        // During testing (because the git repo files originally set training split to 0.1) I actually
+        // encountered this exact problem in the backwardPass function. In turn, I changed it to dynamic
+        // memory allocation onto the heap, using malloc, and no longer ran into this problem.
+        
+        // What did I learn? How to debug. I was running into a segmentation fault in that specific function
+        // and so I had to pull out the debugger and find out that after declaring a 2D array of a 20x4000 array
+        // I'd run into a EXC_BAD_ACCESS after trying to modify [0][0] of the array and
+        // figured ah, we've run out of space on the stack.
         double(*a2_val)[num_val] = malloc(num_neurons_layer2 * sizeof(double[num_val]));
         double(*a3_val)[num_val] = malloc(num_neurons_layer3 * sizeof(double[num_val]));
         double(*a4_val)[num_val] = malloc(num_outputs * sizeof(double[num_val]));
